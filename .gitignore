@@ -21,3 +21,6 @@ tmp/
 # Ignore IDE/editor files
 .vscode/
 .idea/
+
+# Ignore database files (if using SQLite)
+db.sqlite3
