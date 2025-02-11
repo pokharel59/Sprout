@@ -1,0 +1,23 @@
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore environment variables
+.env
+
+# Ignore Django secret keys and settings
+settings_local.py
+
+# Ignore virtual environment
+venv/
+env/
+myenv/
+
+# Ignore logs and temp files
+*.log
+tmp/
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
