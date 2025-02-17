@@ -1,10 +1,5 @@
 from rest_framework import serializers
-from .models import User, Subject, Content, Activity
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
+from .models import Subject, Content, Activity
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
