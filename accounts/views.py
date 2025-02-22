@@ -3,8 +3,10 @@ from rest_framework import status
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 from .models import User
 
 # Create your views here.
@@ -90,10 +92,20 @@ def login(request):
     if authenticated_user.user_status != User.ACTIVE:
         return Response({"error": "Email not verified"}, status=status.HTTP_400_BAD_REQUEST)
     
-    token, created = Token.objects.get_or_create(user=authenticated_user)
+    # Generate JWT tokens (access + refresh)
+    refresh = RefreshToken.for_user(authenticated_user)
+
     return Response({
-        "token": token.key,
-        "user": authenticated_user.email,
-        "username": authenticated_user.username
+        "access_token": str(refresh.access_token),
+        "refresh_token": str(refresh),
     })
     
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_user_info(request):
+    user = request.user
+    return Response({
+        "email": user.email,
+        "username": user.username
+    })
