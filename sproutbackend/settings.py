@@ -13,8 +13,32 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+from datetime import timedelta
 
 load_dotenv()
+
+# Debug print statements to verify environment variables
+print("Cloud Name:", os.getenv("CLOUD_NAME"))
+print("API Key:", bool(os.getenv("API_KEY")))  # Just check if it exists
+print("API Secret:", bool(os.getenv("API_SECRET")))  # Just check if it exists
+
+# Explicit Cloudinary Configuration
+cloudinary.config(
+    cloud_name=os.getenv("CLOUD_NAME"),
+    api_key=os.getenv("API_KEY"),
+    api_secret=os.getenv("API_SECRET")
+)
+
+# Cloudinary Storage Settings
+CLOUDINARY_STORAGE = {
+    'cloud_name': os.getenv("CLOUD_NAME"),
+    'api_key': os.getenv("API_KEY"),
+    'api_secret': os.getenv("API_SECRET"),
+}
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,6 +75,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'corsheaders',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 REST_FRAMEWORK = {
@@ -130,6 +156,16 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),  # Extend access token validity
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Extend refresh token validity
+    "ROTATE_REFRESH_TOKENS": True,  # Issue a new refresh token upon use
+    "BLACKLIST_AFTER_ROTATION": True,  # Blacklist old refresh tokens
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,  # Ensure SECRET_KEY is set
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -144,6 +180,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 STATIC_URL = 'static/'
 
